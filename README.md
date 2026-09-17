@@ -4,7 +4,6 @@ A compiler for a small imperative programming language whose token vocabulary is
 
 Glyph is built as a compiler-theory exploration, not a practical end-user tool — in the tradition of esoteric languages like Brainfuck and APL. Its core technical focus: most compilers (and tools like Lex/Flex) assume single-byte ASCII input. Glyph's lexer has to correctly decode multi-byte UTF-8 sequences and handle Unicode grapheme clusters, which is a genuinely different systems problem than parsing plain text.
 
-> Course project — BCSE307P Compiler Design Laboratory, Phase 1.
 
 ## Why emoji?
 

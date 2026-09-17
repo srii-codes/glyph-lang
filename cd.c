@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* ---------- Token types ---------- */
 typedef enum {
     TOK_PRINT, TOK_NUM, TOK_PLUS, TOK_MINUS, TOK_MUL, TOK_DIV,
     TOK_LOOP, TOK_IF, TOK_EOF, TOK_UNKNOWN
@@ -11,7 +10,7 @@ typedef enum {
 
 typedef struct {
     TokType type;
-    long value; /* used when type == TOK_NUM */
+    long value;
 } Token;
 
 #define MAX_TOKENS 128
@@ -19,7 +18,6 @@ static Token tokens[MAX_TOKENS];
 static int tok_count = 0;
 static int tok_pos = 0;
 
-/* ---------- UTF-8 decode ---------- */
 static uint32_t decode_utf8(const unsigned char *s, int *len) {
     unsigned char c = s[0];
     if (c < 0x80) { *len = 1; return c; }
@@ -51,7 +49,7 @@ static TokType codepoint_to_tok(uint32_t cp) {
     }
 }
 
-/* ---------- Lexer: tokenize one line into the global tokens[] array ---------- */
+/* ---------- Lexer ---------- */
 static void lex_line(const char *line) {
     tok_count = 0;
     tok_pos = 0;
@@ -92,12 +90,12 @@ typedef enum { NODE_NUM, NODE_BINOP, NODE_PRINT, NODE_IF, NODE_LOOP } NodeType;
 
 typedef struct Node {
     NodeType type;
-    long num_value;        /* NODE_NUM */
-    char op;                /* NODE_BINOP: '+','-','*','/' */
-    struct Node *left;      /* NODE_BINOP */
-    struct Node *right;     /* NODE_BINOP */
-    struct Node *expr;      /* NODE_PRINT / condition for IF,LOOP */
-    struct Node *body;      /* NODE_IF / NODE_LOOP */
+    long num_value;        
+    char op;                
+    struct Node *left;      
+    struct Node *right;    
+    struct Node *expr;      
+    struct Node *body;     
 } Node;
 
 static Node *new_node(NodeType type) {
@@ -106,11 +104,11 @@ static Node *new_node(NodeType type) {
     return n;
 }
 
-/* ---------- Parser (recursive descent) ---------- */
+/* ---------- Parser ---------- */
 static Token peek(void) { return tokens[tok_pos]; }
 static Token advance(void) { return tokens[tok_pos++]; }
 
-static Node *parse_expr(void);   /* forward */
+static Node *parse_expr(void);  
 static Node *parse_statement(void);
 
 static Node *parse_factor(void) {
@@ -162,15 +160,15 @@ static Node *parse_statement(void) {
     if (t.type == TOK_IF) {
         advance();
         Node *n = new_node(NODE_IF);
-        n->expr = parse_expr();      /* condition */
-        n->body = parse_statement(); /* single-statement body */
+        n->expr = parse_expr();      
+        n->body = parse_statement(); 
         return n;
     }
     if (t.type == TOK_LOOP) {
         advance();
         Node *n = new_node(NODE_LOOP);
-        n->expr = parse_expr();      /* iteration count / condition */
-        n->body = parse_statement(); /* single-statement body */
+        n->expr = parse_expr();     
+        n->body = parse_statement(); 
         return n;
     }
 
@@ -217,9 +215,8 @@ static void print_ast(Node *n, int depth) {
     }
 }
 
-/* ---------- main ---------- */
 int main(void) {
-    const char *filename = "inputt.txt";
+    const char *filename = "input.txt";
 
     FILE *in = fopen(filename, "rb");
     if (!in) {
